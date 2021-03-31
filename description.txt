@@ -1,0 +1,18 @@
+jeu snek :
+
+le serpend se deplace sur l'ecrant et meure si il se mord ou touche le bord
+grandi si mange fruit et gagne un point
+
+thyngy 1 tourne sens horaire, glignotement vert 
+thyngy 2 tourne entihoraire, glignotement rouge
+
+pause, led bleu fix en pause
+demarage / redemarrage via bp sur la page web
+
+
+
+page decoupé en 2 zone principale:
+-titre, option, pause,...
+-tableau de jeu x*x case
+
+
