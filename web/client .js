@@ -1,4 +1,5 @@
-var client = new Paho.MQTT.Client("mqtt-ws.sdi.hevs.ch", 80, "/ws", "sdi12" + Math.floor(Math.random() * 100));
+var client = new Paho.MQTT.Client("mqtt-ws.sdi.hevs.ch", 80, "/ws", "sdi17" + Math.floor(Math.random() * 100));
+boolean sp = false;
 
 client.onConnectionLost = function(responseObject)
 {
@@ -25,10 +26,10 @@ client.onMessageArrived = function(message)
                         + obj.connected=='true'?'Connected':'Disconnected' + '\n'
                         + 'Thingies connected: ' + obj.thingies.length + '\n';
       break;
-    case 'D2:E7:C3:EC:E1:72':
+    case 'DF:66:32:49:C8:1A':
       logTA.textContent += 'Button of Thingy 1: ' + ((message.payloadString=="true")?'pressed':'released') + '\n';
       break;
-    case 'E3:6E:24:6D:0A:7F':
+    case 'DC:06:D9:40:7A:CB':
       logTA.textContent += 'Button of Thingy 2: ' + ((message.payloadString=="true")?'pressed':'released') + '\n';
       break;
     default:
@@ -38,20 +39,20 @@ client.onMessageArrived = function(message)
 }
 
 client.connect({
-  userName: 'sdi12',
-  password: 'b853639e6c7631559460361e47fced98',
+  userName: 'sdi17',
+  password: 'edc0ebb0d524ebfe491b473111b35939',
   keepAliveInterval: 30,
   cleanSession: true,
   onSuccess: function() {
     console.log("Connected.");
-    client.subscribe("sdi12/status");
-    client.subscribe("sdi12/+/button");
-    client.send('sdi12/D2:E7:C3:EC:E1:72/led', JSON.stringify({
+    client.subscribe("sdi17/status");
+    client.subscribe("sdi17/+/button");
+    client.send('sdi17/DF:66:32:49:C8:1A/led', JSON.stringify({
       red: 0,
-      green: 0,
-      blue: 255
+      green: 255,
+      blue: 0
     }));
-    client.send('sdi12/E3:6E:24:6D:0A:7F/led', JSON.stringify({
+    client.send('sdi12/DC:06:D9:40:7A:CB/led', JSON.stringify({
       red: 255,
       green: 0,
       blue: 0
@@ -62,17 +63,48 @@ client.connect({
   }
 });
 
-function setLED(n)
+function setLED(n,red,green,blue)
 {
-  var red = document.getElementById('red').value;
-  var green = document.getElementById('green').value;
-  var blue = document.getElementById('blue').value;
   if(n==1)
   {
-    client.send('sdi12/D2:E7:C3:EC:E1:72/led', '{"red": ' + red + ',"green": ' + green + ',"blue": ' + blue + '}');
+    client.send('sdi17/DF:66:32:49:C8:1A/led', '{"red": ' + red + ',"green": ' + green + ',"blue": ' + blue + '}');
   }
   else if(n==2)
   {
-    client.send('sdi12/E3:6E:24:6D:0A:7F/led', '{"red": ' + red + ',"green": ' + green + ',"blue": ' + blue + '}');
+    client.send('sdi17/DC:06:D9:40:7A:CB/led', '{"red": ' + red + ',"green": ' + green + ',"blue": ' + blue + '}');
   }
+}
+
+function startStop(){
+	if(sp == true ){
+	//pause game
+  sp = false;
+  setLED(1,0,0,255);
+  setLED(2,0,0,255);
+  //stoptimer;
+	}else{
+	//restart game
+  sp = true;
+  setLED(1,255,0,0);
+  setLED(2,0,255,0);
+  //starttimer;
+	}
+}
+
+function reStart(){
+  //restart game
+}
+
+function runGame(){
+  //check collision
+  //move
+  
+}
+
+function checkCollision {
+  
+}
+
+function move(){
+  
 }
