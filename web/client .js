@@ -1,5 +1,23 @@
 var client = new Paho.MQTT.Client("mqtt-ws.sdi.hevs.ch", 80, "/ws", "sdi17" + Math.floor(Math.random() * 100));
 boolean sp = false;
+enum type {bigHead,head,body,bigBody,tail,noIdea};
+int WIDTH = 30;
+int HEIGHT = 30;
+int resolut = 20;
+int size = 3;
+int score = 0;
+public pos {
+  int x = 0;
+  int Y = 0;
+}
+public warmBody {
+  pos p;
+  type part = noIdea;
+}
+pos vHead;
+vector <warmBody> warm = new vector <warmBody>;
+vector <pos> miam = new vector <pos>;
+
 
 client.onConnectionLost = function(responseObject)
 {
@@ -63,8 +81,7 @@ client.connect({
   }
 });
 
-function setLED(n,red,green,blue)
-{
+function setLED(n,red,green,blue){
   if(n==1)
   {
     client.send('sdi17/DF:66:32:49:C8:1A/led', '{"red": ' + red + ',"green": ' + green + ',"blue": ' + blue + '}');
@@ -75,7 +92,7 @@ function setLED(n,red,green,blue)
   }
 }
 
-function startStop(){
+function void startStop(){
 	if(sp == true ){
 	//pause game
   sp = false;
@@ -91,20 +108,100 @@ function startStop(){
 	}
 }
 
-function reStart(){
-  //restart game
+function void reStart(){
+  score = 0;
+  size = 3;
+  
+  sp = true;
+  startStop();
+  
+  warm.clean;
+  warmBody w1 = new warmBody;
+  w1.p.x = 4*resolut;
+  w1.p.y = 1*resolut;
+  w1.part = head;
+  warm.add(w1);
+  
+  warmBody w2 = new warmBody;
+  w2.p.x = 3*resolut;
+  w2.p.y = 1*resolut;
+  w2.part = body;
+  warm.add(w2);
+  
+  warmBody w3 = new warmBody;
+  w3.p.x = 3*resolut;
+  w3.p.y = 1*resolut;
+  w3.part = tail;
+  warm.add(w3);
+  
+  vHead.x= resolut;
+  vHead.y=0;
+  
+  //draw
 }
 
-function runGame(){
-  //check collision
-  //move
+function void runGame(){
+  move();
+  //draw
   
 }
 
-function checkCollision {
+function bool checkCollision() {
+  for (int y: miam){
+    if(((warm.get(0).px+warm.get(0).vx) ==  miam.get(y).px) && ((warm.get(0).py+warm.get(0).vy) == miam.get(y).py)){
+      score = score+1;
+      warm.get(0).part=bigHead;
+    }
+  }
+  if(((warm.get(0).px+warm.get(0).vx) || (warm.get(0).py+warm.get(0).vy))<= 0){
+    retun true;
+  }
+  else if(((warm.get(0).px+warm.get(0).vx) >= WIDTH){
+    retun true;
+  }
+  else if(((warm.get(0).py+warm.get(0).vy) >= HEIGHT){
+    retun true;
+  } 
   
+  for(int x =1; x<= warmBody.size()-1;x++){
+    if(((warm.get(0).px+warm.get(0).vx) ==  warm.get(x).px) && ((warm.get(0).py+warm.get(0).vy) == warm.get(y).py)){
+      retun true;
+    }
+  }
+  retun false;
 }
 
 function move(){
-  
+  if(checkCollision()){
+      sp= true;
+      game over;
+  }else{
+    //tail
+    if(warm.get(size-2).part == bigBody){
+      warmBody wb = new warmBody;
+      wb.p.x = warm.get(size-1).p.x;
+      wb.p.y = warm.get(size-1).p.y;
+      wb.part = tail;
+      warm.add(wb);
+      size = size+1;
+    }else{
+      warm.get(size-1).p.x = warm.get(size-2).p.x;
+      warm.get(size-1).p.y = warm.get(size-2).p.y;
+    }
+    
+    //body
+    for(int x =size-2; x> 1 ;x--){
+      warm.get(x).p.x = warm.get(x-1).p.x;
+      warm.get(x).p.y = warm.get(x-1).p.y;
+      if(warm.get(x-1).part == BigHead){
+        warm.get(x).part = bigBody; 
+      }else{
+        arm.get(x).part = warm.get(x-1).part
+      }
+    }
+    
+    //head
+    warm.get(0).p.x = warm.get(0).p.x + vHead.x;
+    warm.get(0).p.y = warm.get(0).p.y + vHead.y; 
+  }
 }
