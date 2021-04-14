@@ -1,35 +1,36 @@
 var client = new Paho.MQTT.Client("mqtt-ws.sdi.hevs.ch", 80, "/ws", "sdi17" + Math.floor(Math.random() * 100));
-String thingies1 = 'DF:66:32:49:C8:1A';
-string thingies2 = 'DC:06:D9:40:7A:CB';
+var thingies1 = 'DF:66:32:49:C8:1A';
+var thingies2 = 'DC:06:D9:40:7A:CB';
 
+const  type =  {BIGHEAD : 'bigHead',HEAD :'head',BODY:'body',BIGBODY:'bigBody',TAIL:'tail'};
 
-
-enum type {bigHead,head,body,bigBody,tail,noIdea};
-
-public pos {
-  int x = 0;
-  int Y = 0;
+class pos {
+   constructor(x,y) {
+       this.x = x;
+       this.y = y;
+   }
 }
 
 //param game
 {
-int WIDTH = 300;
-int HEIGHT = 300;
-int resolut = 10;
-int size = 3;
-int score = 0;
-int timeM = 500; // 2 deplacement pour 1s
+var WIDTH = 300;
+var HEIGHT = 300;
+var resolut = 10;
+var size = 3;
+var score = 0;
+var timeM = 500; // 2 deplacement pour 1s
 //int timeD = 40; //non utiliser pour le momant, par de rafraichisement continue
-boolean sp = false;
+var sp = false;
 }
 
-public warmBody {
-  pos p;
-  type part = noIdea;
+class warmBody {
+    constructor() {
+        let p = new pos(0, 0);
+    }
 }
-pos vHead;
-vector <warmBody> warm = new vector <warmBody>;
-vector <pos> miam = new vector <pos>;
+var vHead;
+var warm;
+var miam;
 
 //image game
 {
@@ -51,7 +52,6 @@ gw.height = HEIGHT;
 
 preload();
 drawGame();
-
 
 client.onConnectionLost = function(responseObject){
   if (responseObject.errorCode !== 0)
@@ -117,7 +117,7 @@ client.connect({
   }
 });
 
-function void setLED(n,red,green,blue){
+function setLED(n,red,green,blue){
   if(n==1)
   {
     client.send('sdi17/DF:66:32:49:C8:1A/led', '{"red": ' + red + ',"green": ' + green + ',"blue": ' + blue + '}');
@@ -128,7 +128,7 @@ function void setLED(n,red,green,blue){
   }
 }
 
-function void startStop(){
+function startStop(){
 	if(sp == true ){
 	//pause game
   sp = false;
@@ -146,7 +146,7 @@ function void startStop(){
 	}
 }
 
-function void reStart(){
+function reStart(){
   score = 0;
   size = 3;
   timeM = 500;
@@ -154,20 +154,21 @@ function void reStart(){
   sp = true;	//pour passer en Mode pause apres
   startStop();
   
+  //warm
   warm.clean;
-  warmBody w1 = new warmBody;
+  var w1 = new warmBody;
   w1.p.x = 4*resolut;
   w1.p.y = 1*resolut;
   w1.part = head;
   warm.add(w1);
   
-  warmBody w2 = new warmBody;
+  var w2 = new warmBody;
   w2.p.x = 3*resolut;
   w2.p.y = 1*resolut;
   w2.part = body;
   warm.add(w2);
   
-  warmBody w3 = new warmBody;
+  var w3 = new warmBody;
   w3.p.x = 3*resolut;
   w3.p.y = 1*resolut;
   w3.part = tail;
@@ -176,22 +177,23 @@ function void reStart(){
   vHead.x= resolut;
   vHead.y=0;
   
+  //miam
   miam.clean;
   addMiam();
   
   drawGame();
 }
 
-function void runGame(){
+function runGame(){
   if(sp == true){
-	setTimeOut(runGame(),time);
+	setTimeout(runGame(),time);
 	move();
   }
   drawGame();
 }
 
-function boolean checkCollision(){
-  for (int y: miam){
+function checkCollision(){
+  for (var i=0;i<= warm.size()-1;i++){
     if(((warm.get(0).p.x+vHead.x) ==  miam.get(y).x) && ((warm.get(0).p.y+vHead.y) == miam.get(y).y)){
       score = score+1;
 	  addMiam();
@@ -200,33 +202,33 @@ function boolean checkCollision(){
   }
   
   if(((warm.get(0).px + vHead.x) || (warm.get(0).py + vHead.y))<= 0){
-    retun true;
+    return true;
   }
   else if((warm.get(0).px+vHead.x) >= WIDTH){
-    retun true;
+    return true;
   }
   
   else if((warm.get(0).py+vHead.y) >= HEIGHT){
-    retun true;
+    return true;
   }
   
-  for(int x =1; x<= warmBody.size()-1;x++){
+  for(var x =1; x<= warmBody.size()-1;x++){
     if(((warm.get(0).p.x+vHead.x) ==  warm.get(x).p.x) && ((warm.get(0).p.y+vHead.y) == warm.get(y).p.y)){
-      retun true;
+      return 1;
     }
   }
-  retun false;
+  return false;
 }
 
-function void move(){
+function move(){
   if(checkCollision()){
       sp= true;
       //game over;
 	  drawGameOver();
   }else{
     //tail
-    if(warm.get(size-2).part == bigBody){
-      warmBody wb = new warmBody;
+    if(warm.get(size-2).part == type.BIGBODY){
+      var wb = new warmBody;
       wb.p.x = warm.get(size-1).p.x;
       wb.p.y = warm.get(size-1).p.y;
       wb.part = tail;
@@ -238,10 +240,10 @@ function void move(){
     }
     
     //body
-    for(int x =size-2; x> 1 ;x--){
+    for(var x =size-2; x> 1 ;x--){
       warm.get(x).p.x = warm.get(x-1).p.x;
       warm.get(x).p.y = warm.get(x-1).p.y;
-      if(warm.get(x-1).part == BigHead){
+      if(warm.get(x-1).part == type.BIGHEAD){
         warm.get(x).part = bigBody; 
       }else{
         arm.get(x).part = warm.get(x-1).part
@@ -254,7 +256,7 @@ function void move(){
   }
 }
 
-function void turnL{
+function turnL(){
 	if(vHead.x == resolut){
 		vHead.x = 0;
 		vHead.y = -resolut;
@@ -270,7 +272,7 @@ function void turnL{
 	}	
 }
 
-function void turnR{
+function turnR(){
 	if(vHead.x == resolut){
 		vHead.x = 0;
 		vHead.y = resolut;
@@ -286,38 +288,40 @@ function void turnR{
 	}
 }
 
-function void addMiam(){
-	int x = 0;
-	int y = 0;
-	boolean ok = true;
+function addMiam(){
+	var x = 0;
+	var y = 0;
+	var ok = true;
 	
 	do{
 		ok = true;
 		x = Math.random() * (WIDTH/resolut);
 		y = Math.random() * (HEIGHT/resolut);
 		
-		for(int x =1; x<= warmBody.size();x++){
+		for(var x =1; x<= warmBody.size();x++){
 			if((warm.get(x).p.x ==  x) || (warm.get(x).p.y == y)){
 				ok = false;
 			}
 		}
 		
-		for(int i =1; i <= miam.size();i++){
+		for(var i =1; i <= miam.size();i++){
 			if((miam.get(i).x ==  x) || (miam.get(i).y == y)){
 				ok = false;
 			}
 		}
 	}while(!ok);
 	
-	pos m = new pos;
+	var m = new pos;
 	m.x = x;
 	m.y= y;
 	miam.add(m);
 }
 
-function void drawGame(){
-	for(warm wb:warmBody){
-		switch (wb.type){
+function drawGame(){
+	ctx.clean;
+	ctx.drawImage(background, 0, 0,WIDTH,HEIGHT,null);
+	for(var i =1; i <= warm.size();i++){
+		switch (warm.get(i).type){
 			case bigHead:
 			 ctx.drawImage(bigHead, wb.p.x, wb.p.y);
 			 break;
@@ -337,24 +341,25 @@ function void drawGame(){
 			 break;
 		}
 	}
-	for(miam m:pos){
-		ctx.drawImage(miam, m.x, m.y);
+	for(var i =1; i <= miam.size();i++){
+		ctx.drawImage(miam, miam.get(i).x, miam.get(i).y);
 	}
 }
 
-function void drawGameOver (){
+function drawGameOver (){
+	ctx.clean;
+	ctx.drawImage(background, 0, 0,WIDTH,HEIGHT,null);
 	ctx.drawImage(gameOver, (WIDTH/2)-gameOver.width, (HEIGHT/2)-gameOver.height);
 	
 }
+
 function preload() {
-	bigHead.src = '../../images/bigHead.jpg';
-	head.src = '../../images/head.jpg';
-	bigBody.src = '../../images/bigBody.jpg';
-	body.src = '../../images/body.jpg';
-	tail.src = '../../images/tail.jpg';
-	miam.src = '../../images/miam.jpg';
-	background.src = '../../images/background.jpg';
-	gameOver.src = '../../images/gameOver.jpg';
-	
-	ctx.drawImage(background, 0, 0,WIDTH,HEIGHT,null);
+	bigHead.src = '../images/bigHead.jpg';
+	head.src = '../images/head.jpg';
+	bigBody.src = '../images/bigBody.jpg';
+	body.src = '../images/body.jpg';
+	tail.src = '../images/tail.jpg';
+	miam.src = '../images/miam.jpg';
+	background.src = '../images/background.jpg';
+	gameOver.src = '../images/gameOver.jpg';
 }
