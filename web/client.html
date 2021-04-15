@@ -8,14 +8,25 @@
 
 <body>
 	<button type="submit" id="bpSP" onclick="startStop()">start</button>
-	<button type="submit" id="bpRS" onclick="ReStart()">ReStart</button>
+	<button type="submit" id="bpRS" onclick="reStart()">ReStart</button>
 	WarmSurvival
-	
+<div style = "display: none">
+	<img src="images/bigHead.jpg" id = "bigHead"/>
+	<img src="images/head.jpg" id = "head"/>
+	<img src="images/bigBody.jpg" id = "bigBody"/>
+	<img src="images/body.jpg" id = "body"/>
+	<img src="images/tail.jpg" id = "tail"/>
+	<img src="images/miam.jpg" id = "miam"/>
+	<img src="images/background.jpg" id = "background"/>
+	<img src="images/gameOver.jpg" id = "gameOver"/>
+</div>
+
+
 	  
-	<canvas id="GameWindow">
+	<canvas id="GameWindow" height="300" width="300">
 	Désolé, votre navigateur ne prend pas en charge &lt;canvas&gt;.
 	</canvas>
-	
+
 	<script src="client.js"></script>
 </body>
 </html>

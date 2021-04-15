@@ -1,6 +1,6 @@
-var client = new Paho.MQTT.Client("mqtt-ws.sdi.hevs.ch", 80, "/ws", "sdi17" + Math.floor(Math.random() * 100));
-String thingies1 = 'DF:66:32:49:C8:1A';
-string thingies2 = 'DC:06:D9:40:7A:CB';
+const client = new Paho.MQTT.Client("mqtt-ws.sdi.hevs.ch", 80, "/ws", "sdi17" + Math.floor(Math.random() * 100));
+const thingies1 = 'DF:66:32:49:C8:1A';
+const thingies2 = 'DC:06:D9:40:7A:CB';
 
 client.onConnectionLost = function(responseObject){
   if (responseObject.errorCode !== 0)
@@ -22,14 +22,14 @@ client.onMessageArrived = function(message){
     case 'status':
       var obj = JSON.parse(message.payloadString);
       logTA.textContent += 'New status:' + '\n'
-                        + obj.connected=='true'?'Connected':'Disconnected' + '\n'
+                        + obj.connected==='true'?'Connected':'Disconnected' + '\n'
                         + 'Thingies connected: ' + obj.thingies.length + '\n';
       break;
     case thingies1:
-		 logTA.textContent += 'Button of Thingy 1: ' + ((message.payloadString=="true")?'pressed':'released') + '\n';
+		 logTA.textContent += 'Button of Thingy 1: ' + ((message.payloadString==="true")?'pressed':'released') + '\n';
 	  break;
     case thingies2:
-		 logTA.textContent += 'Button of Thingy 2: ' + ((message.payloadString=="true")?'pressed':'released') + '\n';
+		 logTA.textContent += 'Button of Thingy 2: ' + ((message.payloadString==="true")?'pressed':'released') + '\n';
       break;
     default:
       console.log("Got message: topic=" + message.destinationName + ', payload=' + message.payloadString);
@@ -46,12 +46,12 @@ client.connect({
     console.log("Connected.");
     client.subscribe("sdi17/status");
     client.subscribe("sdi17/+/button");
-    client.send('sdi17/'+ thingies1+'/led', JSON.stringify({
+    client.send('sdi17/DF:66:32:49:C8:1A/led', JSON.stringify({
       red: 0,
       green: 255,
       blue: 0
     }));
-    client.send('sdi12/'+thingies2+'/led', JSON.stringify({
+    client.send('sdi17/DC:06:D9:40:7A:CB/led', JSON.stringify({
       red: 255,
       green: 0,
       blue: 0
@@ -62,10 +62,15 @@ client.connect({
   }
 });
 
-function void setLED(n,red,green,blue){
+function setLED(n)
+{
+  var redC = document.getElementById('red').value;
+  var greenC = document.getElementById('green').value;
+  var blueC = document.getElementById('blue').value;
   if(n==1)
   {
-    client.send('sdi17/DF:66:32:49:C8:1A/led', '{"red": ' + red + ',"green": ' + green + ',"blue": ' + blue + '}');
+    client.send('sdi17/DF:66:32:49:C8:1A/led', JSON.stringify({
+      red: 0 ,green: 0, blue: 255}));
   }
   else if(n==2)
   {
