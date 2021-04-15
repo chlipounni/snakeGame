@@ -314,6 +314,7 @@ function addMiam(){
 function drawGame(){
 
 	ctx.drawImage(background, 0, 0);
+  
 	for(let i =1; i <= warmVec.size;i++){
 		switch (warmVec.get(i).type){
             case 'bigHead':
