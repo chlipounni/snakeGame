@@ -2,29 +2,96 @@
 <html>
 
 <head>
-	<title>Client</title>
+	<title>WarmGame</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+
+	<style>
+		.container {
+			display: flex;
+			flex-direction: row;
+		}
+
+		.container div {
+			width: 600px;
+			height: 60px;
+		}
+
+		.left {
+			text-align: left;
+			background: black;
+		}
+
+		.centre{
+			text-align: left;
+			background: black}
+
+		.right {
+			background: black;
+			color:white;
+			text-align: center;
+			font-family: 'Times New Roman', Times, serif;
+			font-size:17px;
+		}
+
+		.gameZone {
+			background-image: url('images/background.png');
+			background-repeat: no-repeat;
+			width: 1800px;
+			height: 1000px;
+		}
+
+		.button{
+			background-color: #1c87c9;
+			border: none;
+			color: white;
+			padding: 10px 10px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 15px;
+			margin: 10px 10px;
+			cursor: pointer;
+		}
+
+		html {
+			position: relative;
+			min-width: 1800px;
+			min-height: 1060px;
+			height: 100%;
+		}
+
+	</style>
+
 </head>
 
 <body>
-	<button type="submit" id="bpSP" onclick="startStop()">start</button>
-	<button type="submit" id="bpRS" onclick="reStart()">ReStart</button>
-	WarmSurvival
+
 <div style = "display: none">
-	<img src="images/bigHead.jpg" id = "bigHead"/>
-	<img src="images/head.jpg" id = "head"/>
-	<img src="images/bigBody.jpg" id = "bigBody"/>
-	<img src="images/body.jpg" id = "body"/>
-	<img src="images/tail.jpg" id = "tail"/>
-	<img src="images/miam.jpg" id = "miam"/>
-	<img src="images/background.jpg" id = "background"/>
-	<img src="images/gameOver.jpg" id = "gameOver"/>
+	<img src="images/bigHead.png" id = "bigHead"/>
+	<img src="images/head.png" id = "head"/>
+	<img src="images/bigBody.png" id = "bigBody"/>
+	<img src="images/body.png" id = "body"/>
+	<img src="images/tail.png" id = "tail"/>
+	<img src="images/miam.png" id = "miam"/>
+	<img src="images/gameOver.png" id = "gameOver"/>
 </div>
 
-	<canvas id="GameWindow" height="300" width="300">
-
-	</canvas>
-
+<div class="container">
+	<div class="left">
+		<button class="button" type="submit" id="bpSP" onclick="startStop()">start</button>
+		<button class="button" type="submit" id="bpRS" onclick="reStart()">ReStart</button>
+	</div>
+	<div class="centre">
+		<img src="images/titre.png" alt="titre">
+	</div>
+	<div class="right" style="text-align: center;">
+		<p id="score">SCORE :</p>
+	</div>
+</div>
+	<div>
+		<canvas id="GameWindow" height="1800" width="1000">
+		</canvas>
+	</div>
 	<script src="client.js"></script>
 </body>
 </html>

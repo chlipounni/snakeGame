@@ -42,6 +42,7 @@ client.connect({
   password: 'edc0ebb0d524ebfe491b473111b35939',
   keepAliveInterval: 30,
   cleanSession: true,
+  useSSL: true,
   onSuccess: function() {
     console.log("Connected.");
     client.subscribe("sdi17/status");
@@ -69,11 +70,10 @@ function setLED(n)
   var blueC = document.getElementById('blue').value;
   if(n==1)
   {
-    client.send('sdi17/DF:66:32:49:C8:1A/led', JSON.stringify({
-      red: 0 ,green: 0, blue: 255}));
+    client.send('sdi17/DF:66:32:49:C8:1A/led', ('{"red": ' + redC + ',"green": ' + greenC + ',"blue": ' + blueC + '}'));
   }
   else if(n==2)
   {
-    client.send('sdi17/DC:06:D9:40:7A:CB/led', '{"red": ' + red + ',"green": ' + green + ',"blue": ' + blue + '}');
+    client.send('sdi17/DC:06:D9:40:7A:CB/led', ('{"red": ' + redC + ',"green": ' + greenC + ',"blue": ' + blueC + '}'));
   }
 }

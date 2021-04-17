@@ -12,8 +12,8 @@ class pos {
 }
 
 //param game
-const WIDTH = 300;
-const HEIGHT = 300;
+const WIDTH = 1800;
+const HEIGHT = 1100;
 const resolut = 10;
 var size = 3;
 var score = 0;
@@ -25,6 +25,7 @@ class warmBody {
     constructor() {
         let p = new pos(0, 0);
         let part = type.NOIDEA;
+        let ang = 0;
     }
 }
 var vHead;
@@ -38,14 +39,8 @@ var bigBody;
 var body;
 var tail;
 var miam;
-var background;
 var gameOver;
-
-//canvas
-var gw = document.getElementById('GameWindow');
-var ctx = gw.getContext('2d');
-gw.width = WIDTH;
-gw.height = HEIGHT;
+var background;
 
 client.onConnectionLost = function(responseObject){
   if (responseObject.errorCode !== 0)
@@ -226,17 +221,20 @@ function move(){
       wb.p.x = warmVec.get(size-1).p.x;
       wb.p.y = warmVec.get(size-1).p.y;
       wb.part = tail;
+      wb.ang = warmVec.get(size-1).ang;
       warmVec.add(wb);
       size = size+1;
     }else{
       warmVec.get(size-1).p.x = warmVec.get(size-2).p.x;
       warmVec.get(size-1).p.y = warmVec.get(size-2).p.y;
+      warmVec.get(size-1).ang = warmVec.get(size-2).ang;
     }
     
     //body
     for(let x =size-2; x> 1 ;x--){
       warmVec.get(x).p.x = warmVec.get(x-1).p.x;
       warmVec.get(x).p.y = warmVec.get(x-1).p.y;
+        warmVec.get(x).ang = warmVec.get(x-1).ang;
       if(warmVec.get(x-1).part === type.BIGHEAD){
         warmVec.get(x).part = bigBody;
       }else{
@@ -250,35 +248,43 @@ function move(){
   }
 }
 
-function turnL(){
+function turnR(){
 	if(vHead.x  > 0){
 		vHead.x = 0;
 		vHead.y = -resolut;
+        warmVec.get(0).ang = 3;
 	}else if(vHead.y < 0){
 		vHead.y = 0;
 		vHead.x = -resolut;
+        warmVec.get(0).ang = 2;
 	}else if(vHead.x < 0){
 		vHead.x = 0;
 		vHead.y = resolut;
+        warmVec.get(0).ang = 1;
 	}else if(vHead.y > 0){
 		vHead.y = 0;
 		vHead.x = resolut;
+        warmVec.get(0).ang = 0;
 	}	
 }
 
-function turnR(){
+function turnL(){
 	if(vHead.x > 0){
 		vHead.x = 0;
 		vHead.y = resolut;
+        warmVec.get(0).ang = 1;
 	}else if(vHead.y > 0){
 		vHead.y = 0;
 		vHead.x = -resolut;
+        warmVec.get(0).ang = 2;
 	}else if(vHead.x < 0){
 		vHead.x = 0;
 		vHead.y = -resolut;
+        warmVec.get(0).ang = 3;
 	}else if(vHead.y < 0){
 		vHead.y = 0;
 		vHead.x = resolut;
+        warmVec.get(0).ang = 0;
 	}
 }
 
@@ -313,24 +319,24 @@ function addMiam(){
 
 function drawGame(){
 
-	ctx.drawImage(background, 0, 0);
-  
+    ctx.drawImage(background,0,0);
+
 	for(let i =1; i <= warmVec.size;i++){
 		switch (warmVec.get(i).type){
             case 'bigHead':
-			 ctx.drawImage(bigHead, warmVec.get(i).p.x, warmVec.get(i).p.y);
+			 ctx.drawImage(bigHead, warmVec.get(i).p.x, warmVec.get(i).p.y,1,(Math.PI / 2)*warmVec.get(i).ang);
 			 break;
 			case head:
-			 ctx.drawImage(head, warmVec.get(i).p.x, warmVec.get(i).p.y);
+			 ctx.drawImage(head, warmVec.get(i).p.x, warmVec.get(i).p.y,1,(Math.PI / 2)*warmVec.get(i).ang);
 			 break;
 			 case bigBody:
-			 ctx.drawImage(bigBody, warmVec.get(i).p.x, warmVec.get(i).p.y);
+			 ctx.drawImage(bigBody, warmVec.get(i).p.x, warmVec.get(i).p.y,1,(Math.PI / 2)*warmVec.get(i).ang);
 			 break;
 			 case body:
-			 ctx.drawImage(body, warmVec.get(i).p.x, warmVec.get(i).p.y);
+			 ctx.drawImage(body, warmVec.get(i).p.x, warmVec.get(i).p.y,1,(Math.PI / 2)*warmVec.get(i).ang);
 			 break;
 			 case tail:
-			 ctx.drawImage(tail, warmVec.get(i).p.x, warmVec.get(i).p.y);
+			 ctx.drawImage(tail, warmVec.get(i).p.x, warmVec.get(i).p.y,1,(Math.PI / 2)*warmVec.get(i).ang);
 			 break;
 			 default:
 			 break;
@@ -339,10 +345,11 @@ function drawGame(){
 	for(var i =1; i <= miamVec.size;i++){
 		ctx.drawImage(miam, miamVec.get(i).x, miamVec.get(i).y);
 	}
+
 }
 
 function drawGameOver (){
-	ctx.drawImage(background, 0, 0,WIDTH,HEIGHT,null);
+    ctx.drawImage(background,0,0);
 	ctx.drawImage(gameOver, (WIDTH/2)-gameOver.width, (HEIGHT/2)-gameOver.height);
 	
 }
@@ -354,8 +361,12 @@ document.onload = function (){
     body    =   document.getElementById("body");
     tail    =   document.getElementById("tail");
     miam    =   document.getElementById("miam");
-    background = document.getElementById("background");
     gameOver =  document.getElementById("gameOver");
+    background = document.getElementById("background")
 
-    drawGame();
+    //canvas
+    var gw = document.getElementById('GameWindow');
+    var ctx = gw.getContext('2d');
+
+    ctx.drawImage(background,50,50);
 }
