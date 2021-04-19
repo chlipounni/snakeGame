@@ -44,20 +44,20 @@ client.onMessageArrived = function(message){
 client.connect({
   userName: 'sdi17',
   password: 'edc0ebb0d524ebfe491b473111b35939',
-  keepAliveInterval: 1200,
+  keepAliveInterval: 12000,
   cleanSession: true,
   onSuccess: function() {
     console.log("Connected.");
     client.subscribe("sdi17/status");
     client.subscribe("sdi17/+/button");
     client.send('sdi17/'+ thingies1+'/led', JSON.stringify({
-      red: 0,
+      red: 255,
       green: 255,
       blue: 0
     }));
     client.send('sdi17/'+thingies2+'/led', JSON.stringify({
       red: 255,
-      green: 0,
+      green: 255,
       blue: 0
     }));
   },

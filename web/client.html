@@ -6,11 +6,6 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
 	<script src="client.js"></script>
 
-	<script type="javascript">
-
-	</script>
-	<script src="game.js"></script>
-
 	<style>
 		.container {
 			display: flex;
@@ -80,6 +75,7 @@
 	<img src="images/tail.png" id = "tail"/>
 	<img src="images/miam.png" id = "miam"/>
 	<img src="images/gameOver.png" id = "gameOver"/>
+	<img src = "images/background.png" id = "background" />
 </div>
 
 <div class="container">
@@ -95,10 +91,11 @@
 	</div>
 </div>
 <div>
-	<canvas id="GameWindow" height="1800" width="1000">
+	<canvas id="GameWindow" height="1000" width="1800">
 
 	</canvas>
 </div>
+<script src="game.js"></script>
 
 </body>
 </html>
