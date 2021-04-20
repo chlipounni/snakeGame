@@ -9,13 +9,14 @@ class pos {
 //param game
 const WIDTH = 1800;
 const HEIGHT = 1100;
-const resolut = 10;
+const resolut = 80;
 var size = 3;
 var score = 0;
 var timeM = 500; // 2 deplacement pour 1s
 var t;
 //int timeD = 40; //non utiliser pour le momant, par de rafraichisement continue
 var sp = false;
+var gameOv = false;
 
 var vHead = new pos(0,0);
 var warmVec = [];
@@ -60,13 +61,14 @@ function reStart(){
     timeM = 500;
 
     sp = true;	//pour passer en Mode pause apres
+    gameOv = false;
     startStop();
 
     //warm
     warmVec = [];
-    warmVec.push({posX:4*resolut,posY:resolut,part:'head',ang:0 });
-    warmVec.push({posX:3*resolut,posY:resolut,part:'body',ang:0 });
-    warmVec.push({posX:2*resolut,posY:resolut,part:'tail',ang:0 });
+    warmVec.push({posX:4*resolut,posY:2*resolut,part:'head',ang:2 });
+    warmVec.push({posX:3*resolut,posY:2*resolut,part:'body',ang:2 });
+    warmVec.push({posX:2*resolut,posY:2*resolut,part:'tail',ang:2 });
 
     vHead.x= resolut;
     vHead.y=0;
@@ -82,15 +84,15 @@ function runGame(){
     if(sp){
         t = setTimeout(runGame,timeM);
         move();
+        drawGame();
     }else{
        clearTimeout(t);
     }
-    drawGame();
 }
 
 function checkCollision(){
     if(warmVec.size !== 0) {
-        for (var i = 0; i <= warmVec.size - 1; i++) {
+        for (var i = 0; i < warmVec.size - 1; i++) {
             if (miamVec.size !== 0) {
                 if (((warmVec[0].posX + vHead.x) === miamVec[y].x) && ((warmVec[0].posY + vHead.y) === miamVec[y].y)) {
                     score = score + 1;
@@ -100,15 +102,15 @@ function checkCollision(){
             }
         }
 
-        if (((warmVec[0].posX + vHead.x) || (warmVec[0].posY + vHead.y)) <= 0) {
+        if (((warmVec[0].posX + vHead.x) || (warmVec[0].posY + vHead.y)) <= resolut) {
             return true;
-        } else if ((warmVec[0].posX + vHead.x) >= WIDTH) {
+        } else if ((warmVec[0].posX + vHead.x) >= WIDTH-resolut) {
             return true;
-        } else if ((warmVec[0].posY + vHead.y) >= HEIGHT) {
+        } else if ((warmVec[0].posY + vHead.y) >= HEIGHT-resolut) {
             return true;
         }
 
-        for (var x = 1; x <= warmVec.size - 1; x++) {
+        for (var x = 0; x < warmVec.size - 1; x++) {
             if (((warmVec[0].posX + vHead.x) === warmVec[x].posX) && ((warmVec[0].posY + vHead.y) === warmVec[x].posY)) {
                 return 1;
             }
@@ -119,9 +121,9 @@ function checkCollision(){
 
 function move(){
     if(checkCollision()){
-        sp= true;
-        //game over;
-        drawGameOver();
+        sp= false;
+        gameOv =true;
+        //game over
     }else{
         //tail
         if(warmVec[size-2].part === type.BIGBODY){
@@ -134,12 +136,14 @@ function move(){
         }
 
         //body
-        for(let x =size-2; x> 1 ;x--){
-            warmVec[x].p.x = warmVec[x-1].posX;
-            warmVec[x].p.y = warmVec[x-1].posY;
+        for(let x = size - 2 ; x > 0 ;x--){
+            warmVec[x].posX = warmVec[x-1].posX;
+            warmVec[x].posY = warmVec[x-1].posY;
             warmVec[x].ang = warmVec[x-1].ang;
-            if(warmVec[x-1].part === type.BIGHEAD){
-                warmVec[x].part = bigBody;
+            if(warmVec[x-1].part === 'bigHead'){
+                warmVec[x].part = 'bigBody';
+            }else if(warmVec[x-1].part === 'head'){
+                warmVec[x].part = 'body';
             }else{
                 warmVec[x].part = warmVec[x-1].part
             }
@@ -155,19 +159,19 @@ function turnR(){
     if(vHead.x  > 0){
         vHead.x = 0;
         vHead.y = -resolut;
-        warmVec.get(0).ang = 3;
+        warmVec[0].ang = 3;
     }else if(vHead.y < 0){
         vHead.y = 0;
         vHead.x = -resolut;
-        warmVec.get(0).ang = 2;
+        warmVec[0].ang = 2;
     }else if(vHead.x < 0){
         vHead.x = 0;
         vHead.y = resolut;
-        warmVec.get(0).ang = 1;
+        warmVec[0].ang = 1;
     }else if(vHead.y > 0){
         vHead.y = 0;
         vHead.x = resolut;
-        warmVec.get(0).ang = 0;
+        warmVec[0].ang = 0;
     }
 }
 
@@ -175,15 +179,15 @@ function turnL(){
     if(vHead.x > 0){
         vHead.x = 0;
         vHead.y = resolut;
-        warmVec.get(0).ang = 1;
+        warmVec[0].ang = 1;
     }else if(vHead.y > 0){
         vHead.y = 0;
         vHead.x = -resolut;
-        warmVec.get(0).ang = 2;
+        warmVec[0].ang = 2;
     }else if(vHead.x < 0){
         vHead.x = 0;
         vHead.y = -resolut;
-        warmVec.get(0).ang = 3;
+        warmVec[0].ang = 3;
     }else if(vHead.y < 0){
         vHead.y = 0;
         vHead.x = resolut;
@@ -198,16 +202,16 @@ function addMiam(){
 
     do{
         ok = true;
-        x = Math.random() * (WIDTH/resolut);
-        y = Math.random() * (HEIGHT/resolut);
+        x =Math.floor(Math.random() * ((WIDTH/resolut)-4))*resolut;
+        y = Math.floor(Math.random() * ((HEIGHT/resolut)-4))*resolut;
 
-        for(let i =1; x<= warmVec.size;x++){
-            if((warmVec.get(i).p.x ===  x) || (warmVec.get(i).p.y === y)){
+        for(let i =0; x< warmVec.size;x++){
+            if((warmVec.get(i).posX ===  x) || (warmVec.get(i).posY=== y)){
                 ok = false;
             }
         }
 
-        for(let i =1; i <= miamVec.size;i++){
+        for(let i =0; i < miamVec.size;i++){
             if((miamVec.get(i).x ===  x) || (miamVec.get(i).y === y)){
                 ok = false;
             }
@@ -222,36 +226,41 @@ function addMiam(){
 
 function drawGame(){
 
-   // ctx.drawImage(background,0,0);
+    ctx.drawImage(background,0,0);
 
-    for(let i =0; i <= warmVec.length;i++){
+    for(let i =0; i < warmVec.length;i++){
         switch (warmVec[i].part){
             case 'bigHead':
-                ctx.drawImage(bigHead, warmVec[i].posX, warmVec[i].posY,1,(Math.PI / 2)*warmVec[i].ang);
+                drawRotatedImage(bigHead, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
                 break;
             case 'head':
-                ctx.drawImage(head, warmVec[i].posX, warmVec[i].posY,2,(Math.PI / 2)*warmVec[i].ang);
+                drawRotatedImage(head, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
                 break;
             case 'bigBody':
-                ctx.drawImage(bigBody, warmVec[i].posX, warmVec[i].posY,1,(Math.PI / 2)*warmVec[i].ang);
+                drawRotatedImage(bigBody, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
                 break;
             case 'body':
-                ctx.drawImage(body, warmVec[i].posX, warmVec[i].posY,1,(Math.PI / 2)*warmVec[i].ang);
+                drawRotatedImage(body, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
                 break;
             case 'tail':
-                ctx.drawImage(tail, warmVec[i].posX, warmVec[i].posY,1,(Math.PI / 2)*warmVec[i].ang);
+                drawRotatedImage(tail, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
                 break;
             default:
                 break;
         }
     }
-    for(var i =0; i <= miamVec.size;i++){
-        ctx.drawImage(miam, miamVec[i].x, miamVec[i].y);
+    for(var i =0; i < miamVec.length;i++){
+        drawRotatedImage(miam, miamVec[i].x, miamVec[i].y,0);
     }
-
+    if(gameOv){
+        drawRotatedImage(gameOver, (WIDTH/2), (HEIGHT/2),0);
+    }
 }
 
-function drawGameOver (){
-    ctx.drawImage(background,0,0);
-    ctx.drawImage(gameOver, (WIDTH/2)-gameOver.width-gameOver.width, (HEIGHT/2)-gameOver.height-gameOver.height);
+function drawRotatedImage ( image , x , y , angle )  {
+    ctx. save ( ) ;
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.drawImage(image, -(image.width/2), -(image.height/2));
+    ctx.restore();
 }
