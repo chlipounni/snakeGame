@@ -1,4 +1,3 @@
-//typeBody =  {'bigHead','head','body','bigBody','tail','bigTail','noidea'};
 class pos {
     constructor() {
         let x ;
@@ -13,13 +12,14 @@ var scoreMax =0;
 var timeM = 500;
 var time;
 var t;
-//int timeD = 40; //non utiliser pour le momant, par de rafraichisement continue
 var sp = false;
 var gameOv = false;
 var eatMiam = false;
 
 var vHead = new pos(0,0);
-var warmVec = [];
+//partBody =  {'bigHead','head','body','bigBody','tail','bigTail','noidea'};
+//snakeBody =  {posX:,posY:,part:,ang: }
+var snakeVec = [];
 var miamVec = [];
 
 //image game
@@ -43,8 +43,8 @@ var background = document.getElementById("background");
 var pause = document.getElementById("pause");
 
 //size canvas game
-var bgH = 14;
-var bgW = 23;
+const bgH = 14;
+const bgW = 23;
 const resolut = 80;
 const WIDTH = bgW*resolut; //1840
 const HEIGHT = bgH*resolut; //1120
@@ -54,12 +54,11 @@ canvas.height = HEIGHT;
 canvas.width= WIDTH;
 var ctx = canvas.getContext('2d');
 
-scoreMax= localStorage.getItem('localMaxScore');
-
 function startStop(){
     if(!gameOv){
         if(sp === true ){
             //pause game
+            document.getElementById('bpSP').textContent="START";
             clearTimeout(t);
             sp = false;
             setLED(1,0,0,255);
@@ -68,6 +67,7 @@ function startStop(){
             //stopTimer
 
         }else{
+            document.getElementById('bpSP').textContent="PAUSE";
             //restart game
             sp = true;
             setLED(1,255,0,0);
@@ -88,11 +88,11 @@ function reStart(){
     gameOv = false;
     startStop();
 
-    //warm
-    warmVec = [];
-    warmVec.push({posX:4*resolut,posY:2*resolut,part:'head',ang:2 });
-    warmVec.push({posX:3*resolut,posY:2*resolut,part:'body',ang:2 });
-    warmVec.push({posX:2*resolut,posY:2*resolut,part:'tail',ang:2 });
+    //snake
+    snakeVec = [];
+    snakeVec.push({posX:4*resolut,posY:2*resolut,part:'head',ang:2 });
+    snakeVec.push({posX:3*resolut,posY:2*resolut,part:'body',ang:2 });
+    snakeVec.push({posX:2*resolut,posY:2*resolut,part:'tail',ang:2 });
 
     vHead.x= resolut;
     vHead.y=0;
@@ -117,25 +117,25 @@ function runGame(){
 
 function checkCollision(){
     let ret = false;
-    if(warmVec.size !== 0) {
+    if(snakeVec.length !== 0) {
 
-        if (((warmVec[0].posX + vHead.x) < resolut) || ((warmVec[0].posY + vHead.y) < resolut)) {
+        if (((snakeVec[0].posX + vHead.x) < resolut) || ((snakeVec[0].posY + vHead.y) < resolut)) {
             ret= true;
-        } else if ((warmVec[0].posX + vHead.x) >= WIDTH) {
+        } else if ((snakeVec[0].posX + vHead.x) >= WIDTH) {
             return true;
-        } else if ((warmVec[0].posY + vHead.y) >= HEIGHT) {
+        } else if ((snakeVec[0].posY + vHead.y) >= HEIGHT) {
             ret= true;
         }
 
-        for (var x = 1; x < warmVec.length; x++) {
-            if (((warmVec[0].posX + vHead.x) === warmVec[x].posX) && ((warmVec[0].posY + vHead.y) === warmVec[x].posY)) {
+        for (var x = 1; x < snakeVec.length; x++) {
+            if (((snakeVec[0].posX + vHead.x) === snakeVec[x].posX) && ((snakeVec[0].posY + vHead.y) === snakeVec[x].posY)) {
                 ret= true;
             }
         }
 
-        if (miamVec.size !== 0) {
+        if (miamVec.length !== 0) {
             for (var i = 0; i < miamVec.length; i++) {
-                if (((warmVec[0].posX + vHead.x) === miamVec[i].x) && ((warmVec[0].posY + vHead.y) === miamVec[i].y)) {
+                if (((snakeVec[0].posX + vHead.x) === miamVec[i].x) && ((snakeVec[0].posY + vHead.y) === miamVec[i].y)) {
                     score = score + 1;
                     if(score%2==0){
                         upVitesse();}
@@ -153,136 +153,139 @@ function move(){
         theEnd();
     }else{
         //tail
-        if(warmVec[size-1].part === 'bigTail'){
-            warmVec.push({posX:warmVec[size-1].posX,posY:warmVec[size-1].posY,part:'tail',ang:warmVec[size-1].ang});
+        if(snakeVec[size-1].part === 'bigTail'){
+            snakeVec.push({posX:snakeVec[size-1].posX,posY:snakeVec[size-1].posY,part:'tail',ang:snakeVec[size-1].ang});
             size = size+1;
-        }else if(warmVec[size-1].part === 'bigTailR'){
-            warmVec.push({posX:warmVec[size-1].posX,posY:warmVec[size-1].posY,part:'tailR',ang:warmVec[size-1].ang});
+        }else if(snakeVec[size-1].part === 'bigTailR'){
+            snakeVec.push({posX:snakeVec[size-1].posX,posY:snakeVec[size-1].posY,part:'tailR',ang:snakeVec[size-1].ang});
             size = size+1;
-        }else if(warmVec[size-1].part === 'bigTailL'){
-            warmVec.push({posX:warmVec[size-1].posX,posY:warmVec[size-1].posY,part:'tailL',ang:warmVec[size-1].ang});
+        }else if(snakeVec[size-1].part === 'bigTailL'){
+            snakeVec.push({posX:snakeVec[size-1].posX,posY:snakeVec[size-1].posY,part:'tailL',ang:snakeVec[size-1].ang});
             size = size+1;
-        }else if(warmVec[size-2].part === 'bigBody'){
-            warmVec[size-1].part = 'bigTail';
-            warmVec[size-2].part = 'body';
-            warmVec[size-1].posX = warmVec[size-2].posX;
-            warmVec[size-1].posY = warmVec[size-2].posY;
-            warmVec[size-1].ang = warmVec[size-2].ang;
-        }else if(warmVec[size-2].part === 'bigBodyL') {
-            warmVec[size - 1].part = 'bigTailL';
-            warmVec[size - 2].part = 'body';
-            warmVec[size - 1].posX = warmVec[size - 2].posX;
-            warmVec[size - 1].posY = warmVec[size - 2].posY;
-            warmVec[size - 1].ang = warmVec[size - 2].ang;
-        }else if(warmVec[size-2].part === 'bigBodyR'){
-            warmVec[size-1].part = 'bigTailR';
-            warmVec[size-2].part = 'body';
-            warmVec[size-1].posX = warmVec[size-2].posX;
-            warmVec[size-1].posY = warmVec[size-2].posY;
-            warmVec[size-1].ang = warmVec[size-2].ang;
-        }else if(warmVec[size-2].part === 'bodyL'){
-            warmVec[size-1].posX = warmVec[size-2].posX;
-            warmVec[size-1].posY = warmVec[size-2].posY;
-            warmVec[size-1].ang = warmVec[size-2].ang;
-            warmVec[size-1].part='tailL';
-        }else if(warmVec[size-2].part === 'bodyR'){
-            warmVec[size-1].posX = warmVec[size-2].posX;
-            warmVec[size-1].posY = warmVec[size-2].posY;
-            warmVec[size-1].ang = warmVec[size-2].ang;
-            warmVec[size-1].part='tailR';
+        }else if(snakeVec[size-2].part === 'bigBody'){
+            snakeVec[size-1].part = 'bigTail';
+            snakeVec[size-2].part = 'body';
+            snakeVec[size-1].posX = snakeVec[size-2].posX;
+            snakeVec[size-1].posY = snakeVec[size-2].posY;
+            snakeVec[size-1].ang = snakeVec[size-2].ang;
+        }else if(snakeVec[size-2].part === 'bigBodyL') {
+            snakeVec[size - 1].part = 'bigTailL';
+            snakeVec[size - 2].part = 'body';
+            snakeVec[size - 1].posX = snakeVec[size - 2].posX;
+            snakeVec[size - 1].posY = snakeVec[size - 2].posY;
+            snakeVec[size - 1].ang = snakeVec[size - 2].ang;
+        }else if(snakeVec[size-2].part === 'bigBodyR'){
+            snakeVec[size-1].part = 'bigTailR';
+            snakeVec[size-2].part = 'body';
+            snakeVec[size-1].posX = snakeVec[size-2].posX;
+            snakeVec[size-1].posY = snakeVec[size-2].posY;
+            snakeVec[size-1].ang = snakeVec[size-2].ang;
+        }else if(snakeVec[size-2].part === 'bodyL'){
+            snakeVec[size-1].posX = snakeVec[size-2].posX;
+            snakeVec[size-1].posY = snakeVec[size-2].posY;
+            snakeVec[size-1].ang = snakeVec[size-2].ang;
+            snakeVec[size-1].part='tailL';
+        }else if(snakeVec[size-2].part === 'bodyR'){
+            snakeVec[size-1].posX = snakeVec[size-2].posX;
+            snakeVec[size-1].posY = snakeVec[size-2].posY;
+            snakeVec[size-1].ang = snakeVec[size-2].ang;
+            snakeVec[size-1].part='tailR';
         }else{
-            warmVec[size-1].posX = warmVec[size-2].posX;
-            warmVec[size-1].posY = warmVec[size-2].posY;
-            warmVec[size-1].ang = warmVec[size-2].ang;
-            warmVec[size-1].part='tail';
+            snakeVec[size-1].posX = snakeVec[size-2].posX;
+            snakeVec[size-1].posY = snakeVec[size-2].posY;
+            snakeVec[size-1].ang = snakeVec[size-2].ang;
+            snakeVec[size-1].part='tail';
         }
 
         //body
         for(let x = size - 2 ; x > 0 ;x--){
-            warmVec[x].posX = warmVec[x-1].posX;
-            warmVec[x].posY = warmVec[x-1].posY;
-            warmVec[x].ang = warmVec[x-1].ang;
+            snakeVec[x].posX = snakeVec[x-1].posX;
+            snakeVec[x].posY = snakeVec[x-1].posY;
+            snakeVec[x].ang = snakeVec[x-1].ang;
 
         //first body
-            if(warmVec[x-1].part === 'head'){
-                warmVec[x].part = 'body';
-            }else if(warmVec[x-1].part === 'headL'){
-                warmVec[x].part = 'bodyL';
-            }else if(warmVec[x-1].part === 'headR'){
-                warmVec[x].part = 'bodyR';
-            }else if(warmVec[x-1].part === 'bigHead'){
-                warmVec[x].part = 'bigBody';
-            }else if(warmVec[x-1].part === 'bigHeadL'){
-                warmVec[x].part = 'bigBodyL';
-            }else if(warmVec[x-1].part === 'bigHeadR'){
-                warmVec[x].part = 'bigBodyR';
+            if(snakeVec[x-1].part === 'head'){
+                snakeVec[x].part = 'body';
+            }else if(snakeVec[x-1].part === 'headL'){
+                snakeVec[x].part = 'bodyL';
+            }else if(snakeVec[x-1].part === 'headR'){
+                snakeVec[x].part = 'bodyR';
+            }else if(snakeVec[x-1].part === 'bigHead'){
+                snakeVec[x].part = 'bigBody';
+            }else if(snakeVec[x-1].part === 'bigHeadL'){
+                snakeVec[x].part = 'bigBodyL';
+            }else if(snakeVec[x-1].part === 'bigHeadR'){
+                snakeVec[x].part = 'bigBodyR';
             }else{
-                warmVec[x].part = warmVec[x-1].part
+                snakeVec[x].part = snakeVec[x-1].part
             }
-
         }
 
         //head
-        warmVec[0].posX = warmVec[0].posX + vHead.x;
-        warmVec[0].posY = warmVec[0].posY + vHead.y;
+        snakeVec[0].posX = snakeVec[0].posX + vHead.x;
+        snakeVec[0].posY = snakeVec[0].posY + vHead.y;
 
+        //eat?
         if (eatMiam){
             eatMiam=false;
-            warmVec[0].part = 'bigHead';
+            snakeVec[0].part = 'bigHead';
         }else{
-            warmVec[0].part = 'head';
+            snakeVec[0].part = 'head';
         }
     }
 }
 
 function turnL(){
-    if(vHead.x  > 0){
-        vHead.x = 0;
-        vHead.y = -resolut;
-        warmVec[0].ang = 1;
-    }else if(vHead.y < 0){
-        vHead.y = 0;
-        vHead.x = -resolut;
-        warmVec[0].ang = 0;
-    }else if(vHead.x < 0){
-        vHead.x = 0;
-        vHead.y = resolut;
-        warmVec[0].ang = 3;
-    }else if(vHead.y > 0){
-        vHead.y = 0;
-        vHead.x = resolut;
-        warmVec[0].ang = 2;
+    if(sp){
+        if(vHead.x  > 0){
+            vHead.x = 0;
+            vHead.y = -resolut;
+            snakeVec[0].ang = 1;
+        }else if(vHead.y < 0){
+            vHead.y = 0;
+            vHead.x = -resolut;
+            snakeVec[0].ang = 0;
+        }else if(vHead.x < 0){
+            vHead.x = 0;
+            vHead.y = resolut;
+            snakeVec[0].ang = 3;
+        }else if(vHead.y > 0){
+            vHead.y = 0;
+            vHead.x = resolut;
+            snakeVec[0].ang = 2;
+        }
+        if(snakeVec[0].part=== 'bigHead'){
+            snakeVec[0].part='bigHeadL';
+        }else{
+            snakeVec[0].part='headL';
+        }
     }
-    if(warmVec[0].part=== 'bigHead'){
-        warmVec[0].part='bigHeadL';
-    }else{
-        warmVec[0].part='headL';
-    }
-
 }
 
 function turnR(){
-    if(vHead.x > 0){
-        vHead.x = 0;
-        vHead.y = resolut;
-        warmVec[0].ang = 3;
-    }else if(vHead.y > 0){
-        vHead.y = 0;
-        vHead.x = -resolut;
-        warmVec[0].ang = 0;
-    }else if(vHead.x < 0){
-        vHead.x = 0;
-        vHead.y = -resolut;
-        warmVec[0].ang = 1;
-    }else if(vHead.y < 0){
-        vHead.y = 0;
-        vHead.x = resolut;
-        warmVec[0].ang = 2;
-    }
-    if(warmVec[0].part=== 'bigHead'){
-        warmVec[0].part='bigHeadR';
-    }else{
-        warmVec[0].part='headR';
+    if(sp) {
+        if (vHead.x > 0) {
+            vHead.x = 0;
+            vHead.y = resolut;
+            snakeVec[0].ang = 3;
+        } else if (vHead.y > 0) {
+            vHead.y = 0;
+            vHead.x = -resolut;
+            snakeVec[0].ang = 0;
+        } else if (vHead.x < 0) {
+            vHead.x = 0;
+            vHead.y = -resolut;
+            snakeVec[0].ang = 1;
+        } else if (vHead.y < 0) {
+            vHead.y = 0;
+            vHead.x = resolut;
+            snakeVec[0].ang = 2;
+        }
+        if (snakeVec[0].part === 'bigHead') {
+            snakeVec[0].part = 'bigHeadR';
+        } else {
+            snakeVec[0].part = 'headR';
+        }
     }
 }
 
@@ -295,8 +298,8 @@ function addMiam(miamPos){
         x =Math.floor(Math.random() * ((WIDTH/resolut)-4))*resolut+resolut;
         y = Math.floor(Math.random() * ((HEIGHT/resolut)-4))*resolut+resolut;
 
-        for(let i =0; x< warmVec.length;x++){
-            if((warmVec[i].posX ===  x) || (warmVec[i].posY=== y)){
+        for(let i =0; x< snakeVec.length;x++){
+            if((snakeVec[i].posX ===  x) || (snakeVec[i].posY=== y)){
                 ok = false;
             }
         }
@@ -316,53 +319,53 @@ function drawGame(){
 
     ctx.drawImage(background,0,0,WIDTH,HEIGHT);
 
-    for(let i =0; i < warmVec.length;i++){
-        switch (warmVec[i].part){
+    for(let i =0; i < snakeVec.length;i++){
+        switch (snakeVec[i].part){
             case 'bigHead':
             case 'bigHeadL':
             case 'bigHeadR':
-                drawRotatedImage(bigHead, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
+                drawRotatedImage(bigHead, snakeVec[i].posX, snakeVec[i].posY,(Math.PI/2)*snakeVec[i].ang);
                 break;
             case 'head':
             case 'headL':
             case 'headR':
-                drawRotatedImage(head, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
+                drawRotatedImage(head, snakeVec[i].posX, snakeVec[i].posY,(Math.PI/2)*snakeVec[i].ang);
                 break;
             case 'bigBody':
-                drawRotatedImage(bigBody, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
+                drawRotatedImage(bigBody, snakeVec[i].posX, snakeVec[i].posY,(Math.PI/2)*snakeVec[i].ang);
                 break;
             case 'bigBodyL':
-                drawRotatedImage(bigBodyL, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
+                drawRotatedImage(bigBodyL, snakeVec[i].posX, snakeVec[i].posY,(Math.PI/2)*snakeVec[i].ang);
                 break;
             case 'bigBodyR':
-                drawRotatedImage(bigBodyR, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
+                drawRotatedImage(bigBodyR, snakeVec[i].posX, snakeVec[i].posY,(Math.PI/2)*snakeVec[i].ang);
                 break;
             case 'body':
-                drawRotatedImage(body, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
+                drawRotatedImage(body, snakeVec[i].posX, snakeVec[i].posY,(Math.PI/2)*snakeVec[i].ang);
                 break;
             case 'bodyL':
-                drawRotatedImage(bodyL, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
+                drawRotatedImage(bodyL, snakeVec[i].posX, snakeVec[i].posY,(Math.PI/2)*snakeVec[i].ang);
                 break;
             case 'bodyR':
-                drawRotatedImage(bodyR, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
+                drawRotatedImage(bodyR, snakeVec[i].posX, snakeVec[i].posY,(Math.PI/2)*snakeVec[i].ang);
                 break;
             case 'tail':
-                drawRotatedImage(tail, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
+                drawRotatedImage(tail, snakeVec[i].posX, snakeVec[i].posY,(Math.PI/2)*snakeVec[i].ang);
                 break;
             case 'tailL':
-                drawRotatedImage(tailL, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
+                drawRotatedImage(tailL, snakeVec[i].posX, snakeVec[i].posY,(Math.PI/2)*snakeVec[i].ang);
                 break;
             case 'tailR':
-                drawRotatedImage(tailR, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
+                drawRotatedImage(tailR, snakeVec[i].posX, snakeVec[i].posY,(Math.PI/2)*snakeVec[i].ang);
                 break;
             case 'bigTail':
-                drawRotatedImage(bigTail, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
+                drawRotatedImage(bigTail, snakeVec[i].posX, snakeVec[i].posY,(Math.PI/2)*snakeVec[i].ang);
                 break;
             case 'bigTailL':
-                drawRotatedImage(bigTailL, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
+                drawRotatedImage(bigTailL, snakeVec[i].posX, snakeVec[i].posY,(Math.PI/2)*snakeVec[i].ang);
                 break;
             case 'bigTailR':
-                drawRotatedImage(bigTailR, warmVec[i].posX, warmVec[i].posY,(Math.PI/2)*warmVec[i].ang);
+                drawRotatedImage(bigTailR, snakeVec[i].posX, snakeVec[i].posY,(Math.PI/2)*snakeVec[i].ang);
                 break;
             default:
                 break;
@@ -385,6 +388,7 @@ function drawRotatedImage ( image , x , y , angle )  {
     ctx.drawImage(image, -(image.height/2), -(image.width/2),resolut,resolut);
     ctx.restore();
 }
+
 function drawImage ( image , x , y , angle )  {
     ctx. save ( ) ;
     ctx.translate(x, y);
@@ -392,13 +396,14 @@ function drawImage ( image , x , y , angle )  {
     ctx.drawImage(image, -(image.height/2), -(image.width/2));
     ctx.restore();
 }
+
 function upVitesse(){
-    time=time-20;
+    if(time >= 50){
+        time=time-20;
+    }
 }
 
 function theEnd(){
-    setLED(1,0,0,0);
-    setLED(2,0,0,0);
     sp= false;
     gameOv =true;
     //game over
@@ -406,6 +411,6 @@ function theEnd(){
         localStorage.setItem('localMaxScore', score);
         scoreMax = score;
     }
+    setLED(1,0,0,0);
+    setLED(2,0,0,0);
 }
-
-

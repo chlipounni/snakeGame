@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<title>WarmGame</title>
+	<title>SnakeGame</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
 	<script src="client.js"></script>
 
@@ -11,21 +11,18 @@
 			display: flex;
 			flex-direction: row;
 		}
-
 		.container div {
 			width: 613px;
 			height: 60px;
 		}
-
 		.left {
 			text-align: left;
 			background: black;
 		}
-
 		.centre{
 			text-align: left;
-			background: black}
-
+			background: black
+		}
 		.right {
 			background: black;
 			color:white;
@@ -33,7 +30,6 @@
 			font-family: 'Times New Roman', Times, serif;
 			font-size:17px;
 		}
-
 		.button{
 			background-color: #1c87c9;
 			border: none;
@@ -48,7 +44,6 @@
 		}
 
 	</style>
-
 </head>
 
 <body>
@@ -71,28 +66,26 @@
 	<img src="images/miam.png" id = "miam"/>
 	<img src="images/gameOver.png" id = "gameOver"/>
 	<img src="images/pause.png" id = "pause"/>
-	<img src = "images/background.png" id = "background" />
+	<img src="images/background.png" id = "background" />
 </div>
 
 <div class="container">
 	<div class="left">
-		<button class="button" type="submit" id="bpSP" onclick="startStop()">start</button>
-		<button class="button" type="submit" id="bpRS" onclick="reStart()">ReStart</button>
+		<button class="button" type="submit" id="bpSP" onclick="startStop()">start/pause</button>
+		<button class="button" type="submit" id="bpRS" onclick="reStart()">RESTART</button>
 	</div>
 	<div class="centre">
 		<img src="images/titre.png" alt="titre">
 	</div>
 	<div class="right" style="text-align: center;">
 		<p id="score"></p>
-
 	</div>
 </div>
 <div>
 	<canvas id="GameWindow" height="1120" width="1840">
-
 	</canvas>
 </div>
 <script src="game.js"></script>
-
 </body>
+
 </html>

@@ -44,7 +44,7 @@ client.onMessageArrived = function(message){
 client.connect({
   userName: 'sdi17',
   password: 'edc0ebb0d524ebfe491b473111b35939',
-  keepAliveInterval: 12000,
+  keepAliveInterval: 50,
   cleanSession: true,
   onSuccess: function() {
     console.log("Connected.");
@@ -60,6 +60,8 @@ client.connect({
       green: 255,
       blue: 0
     }));
+    reStart();
+    scoreMax= localStorage.getItem('localMaxScore');
   },
   onFailure: function() {
     console.error("Failed to connect.");
