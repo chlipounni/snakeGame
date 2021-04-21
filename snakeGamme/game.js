@@ -61,17 +61,13 @@ function startStop(){
             document.getElementById('bpSP').textContent="START";
             clearTimeout(t);
             sp = false;
-            setLED(1,0,0,255);
-            setLED(2,0,0,255);
-            drawImage(pause, (WIDTH/2),(HEIGHT/2));
+            drawImage(pause, (WIDTH/2),(HEIGHT/2),0);
             //stopTimer
 
         }else{
             document.getElementById('bpSP').textContent="PAUSE";
             //restart game
             sp = true;
-            setLED(1,255,0,0);
-            setLED(2,0,255,0);
             //starttimer;
             runGame();
         }
@@ -300,13 +296,13 @@ function addMiam(miamPos){
         y = Math.floor(Math.random() * ((HEIGHT/resolut)-4))*resolut+resolut;
 
         for(let i =0; x< snakeVec.length;x++){
-            if((snakeVec[i].posX ===  x) && (snakeVec[i].posY=== y)){
+            if((snakeVec[i].posX ===  x) || (snakeVec[i].posY=== y)){
                 ok = false;
             }
         }
 
         for(let i =0; i < miamVec.length;i++){
-            if((miamVec[i].x ===  x) && (miamVec[i].y === y)){
+            if((miamVec[i].x ===  x) || (miamVec[i].y === y)){
                 ok = false;
             }
         }
@@ -376,7 +372,7 @@ function drawGame(){
         drawRotatedImage(miam, miamVec[i].x, miamVec[i].y,0);
     }
     if(gameOv){
-        drawImage(gameOver, (WIDTH/2), (HEIGHT/2));
+        drawImage(gameOver, (WIDTH/2), (HEIGHT/2),0);
     }
 
     document.getElementById('score').textContent = ('score : '+score + '\t max Score : '+scoreMax);
@@ -390,9 +386,10 @@ function drawRotatedImage ( image , x , y , angle )  {
     ctx.restore();
 }
 
-function drawImage ( image , x , y )  {
+function drawImage ( image , x , y , angle )  {
     ctx. save ( ) ;
     ctx.translate(x, y);
+    ctx.rotate(angle);
     ctx.drawImage(image, -(image.height/2), -(image.width/2));
     ctx.restore();
 }
@@ -411,6 +408,4 @@ function theEnd(){
         localStorage.setItem('localMaxScore', score);
         scoreMax = score;
     }
-    setLED(1,0,0,0);
-    setLED(2,0,0,0);
 }

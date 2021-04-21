@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>SnakeGame</title>
+	<script src="client.js"></script>
+
+	<style>
+		.container {
+			display: flex;
+			flex-direction: row;
+		}
+		.container div {
+			width: 613px;
+			height: 60px;
+		}
+		.left {
+			text-align: left;
+			background: black;
+		}
+		.centre{
+			text-align: left;
+			background: black
+		}
+		.right {
+			background: black;
+			color:white;
+			text-align: center;
+			font-family: 'Times New Roman', Times, serif;
+			font-size:17px;
+		}
+		.button{
+			background-color: #1c87c9;
+			border: none;
+			color: white;
+			padding: 10px 10px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 15px;
+			margin: 10px 10px;
+			cursor: pointer;
+		}
+
+	</style>
+</head>
+
+<body>
+
+<div style = "display: none">
+	<img src="images/bigHead.png" id = "bigHead"/>
+	<img src="images/head.png" id = "head"/>
+	<img src="images/bigBody.png" id = "bigBody"/>
+	<img src="images/bigBodyL.png" id = "bigBodyL"/>
+	<img src="images/bigBodyR.png" id = "bigBodyR"/>
+	<img src="images/body.png" id = "body"/>
+	<img src="images/bodyL.png" id = "bodyL"/>
+	<img src="images/bodyR.png" id = "bodyR"/>
+	<img src="images/tail.png" id = "tail"/>
+	<img src="images/tailL.png" id = "tailL"/>
+	<img src="images/tailR.png" id = "tailR"/>
+	<img src="images/bigTail.png" id = "bigTail"/>
+	<img src="images/bigTailL.png" id = "bigTailL"/>
+	<img src="images/bigTailR.png" id = "bigTailR"/>
+	<img src="images/miam.png" id = "miam"/>
+	<img src="images/gameOver.png" id = "gameOver"/>
+	<img src="images/pause.png" id = "pause"/>
+	<img src="images/background.png" id = "background" />
+</div>
+
+<div class="container">
+	<div class="left">
+		<button class="button" type="submit" id="bpSP" onclick="startStop()">start/pause</button>
+		<button class="button" type="submit" id="bpRS" onclick="reStart()">RESTART</button>
+	</div>
+	<div class="centre">
+		<img src="images/titre.png" alt="titre">
+	</div>
+	<div class="right" style="text-align: center;">
+		<p id="score"></p>
+	</div>
+</div>
+<div>
+	<canvas id="GameWindow" height="1120" width="1840">
+	</canvas>
+</div>
+<script src="game.js"></script>
+</body>
+
+</html>

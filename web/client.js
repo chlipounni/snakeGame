@@ -14,18 +14,10 @@ client.onConnectionLost = function(responseObject){
 }
 
 client.onMessageArrived = function(message){
-  var logTA = document.getElementById('log');
   var splittedName = message.destinationName.split('/');
   
-  switch(splittedName[1])
-  {
-    case 'status':
-      var obj = JSON.parse(message.payloadString);
-      logTA.textContent += 'New status:' + '\n'
-                        + obj.connected==='true'?'Connected':'Disconnected' + '\n'
-                        + 'Thingies connected: ' + obj.thingies.length + '\n';
-      break;
-    case thingies1:
+  switch(splittedName[1]){
+      case thingies1:
 		if(message.payloadString==="true"){
 			turnL();
 		}
@@ -78,32 +70,3 @@ function setLED(n,red,green,blue){
     client.send('sdi17/DC:06:D9:40:7A:CB/led', '{"red": ' + red + ',"green": ' + green + ',"blue": ' + blue + '}');
   }
 }
-window.addEventListener("keydown", function (event) {
-  if (event.defaultPrevented) {
-    return; // Do nothing if the event was already processed
-  }
-
-  switch (event.key) {
-    case "ArrowDown":
-      // code for "down arrow" key press.
-        startStop();
-      break;
-    case "ArrowUp":
-      reStart();
-      // code for "up arrow" key press.
-      break;
-    case "ArrowLeft":
-      // code for "left arrow" key press.
-        turnL();
-      break;
-    case "ArrowRight":
-      // code for "right arrow" key press.
-        turnR();
-      break;
-    default:
-      return; // Quit when this doesn't handle the key event.
-  }
-
-  // Cancel the default action to avoid it being handled twice
-  event.preventDefault();
-}, true);
