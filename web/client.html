@@ -13,7 +13,7 @@
 		}
 
 		.container div {
-			width: 600px;
+			width: 613px;
 			height: 60px;
 		}
 
@@ -34,13 +34,6 @@
 			font-size:17px;
 		}
 
-		.gameZone {
-			background-image: url('images/background.png');
-			background-repeat: no-repeat;
-			width: 1800px;
-			height: 1000px;
-		}
-
 		.button{
 			background-color: #1c87c9;
 			border: none;
@@ -54,13 +47,6 @@
 			cursor: pointer;
 		}
 
-		html {
-			position: relative;
-			min-width: 1800px;
-			min-height: 1060px;
-			height: 100%;
-		}
-
 	</style>
 
 </head>
@@ -71,9 +57,17 @@
 	<img src="images/bigHead.png" id = "bigHead"/>
 	<img src="images/head.png" id = "head"/>
 	<img src="images/bigBody.png" id = "bigBody"/>
+	<img src="images/bigBodyL.png" id = "bigBodyL"/>
+	<img src="images/bigBodyR.png" id = "bigBodyR"/>
 	<img src="images/body.png" id = "body"/>
+	<img src="images/bodyL.png" id = "bodyL"/>
+	<img src="images/bodyR.png" id = "bodyR"/>
 	<img src="images/tail.png" id = "tail"/>
+	<img src="images/tailL.png" id = "tailL"/>
+	<img src="images/tailR.png" id = "tailR"/>
 	<img src="images/bigTail.png" id = "bigTail"/>
+	<img src="images/bigTailL.png" id = "bigTailL"/>
+	<img src="images/bigTailR.png" id = "bigTailR"/>
 	<img src="images/miam.png" id = "miam"/>
 	<img src="images/gameOver.png" id = "gameOver"/>
 	<img src="images/pause.png" id = "pause"/>
@@ -89,11 +83,12 @@
 		<img src="images/titre.png" alt="titre">
 	</div>
 	<div class="right" style="text-align: center;">
-		<p id="score">SCORE :</p>
+		<p id="score"></p>
+
 	</div>
 </div>
 <div>
-	<canvas id="GameWindow" height="1000" width="1800">
+	<canvas id="GameWindow" height="1120" width="1840">
 
 	</canvas>
 </div>
