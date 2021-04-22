@@ -409,3 +409,6 @@ function theEnd(){
         scoreMax = score;
     }
 }
+
+setTimeout(reStart,500);
+scoreMax= localStorage.getItem('localMaxScore');
